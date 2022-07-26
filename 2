@@ -1,0 +1,98 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.*;
+import java.io.*;
+import javax.imageio.*;
+import javax.swing.*;
+public class Bird2 extends JFrame implements Runnable{
+   
+	private final String p1 ="/Users/kosats/Desktop/b1234/";
+    private BufferedImage[] image = new BufferedImage[4];
+    private JButton start;
+    private JButton pause ;
+    private JButton unpause;
+    private JLabel sleepTime;
+    private JComboBox<Integer> st;
+    private Thread  thread  = new Thread( this);
+    private BirdPanel panel;
+    private int timer=100;
+    public FlyingBird() {    
+          try{
+        	   image[0]=ImageIO.read(new File(p1+"b1.jpg"));
+               image[1]=ImageIO.read(new File(p1+"b2.jpg"));
+               image[2]=ImageIO.read(new File(p1+"b3.jpg"));
+               image[3]=ImageIO.read(new File(p1+"b4.jpg"));
+          }
+          catch (IOException e){
+                    e.printStackTrace();
+            }
+             start =new JButton("Start");
+             pause =new JButton("Pause");
+             unpause =new JButton("Un Pause");
+             sleepTime =new JLabel("Sleep Time");
+             st =new JComboBox<Integer>();
+             st.addItem(100);
+             st.addItem(50);
+
+             start.setSize(100,50);
+             pause.setSize(100,50);
+             unpause.setSize(50,50);
+         super.setLayout(new FlowLayout()); 
+         panel = new BirdPanel();
+             setVisible(true);
+             setSize(380,400);
+             setLocationRelativeTo(null);
+             setTitle("Animation");
+             add(start);
+             add(pause);
+             add(unpause);
+             add(sleepTime);
+             add(st);
+             add(panel);
+
+         st.addItemListener(new ItemListener(){
+                    public void itemStateChanged(ItemEvent ie){
+                    timer = (int) ie.getItem();
+                    }
+                    });
+         start.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent ae){
+                        if(!thread.isAlive())
+                            thread.start();
+                                    }
+                            });
+         pause.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent ae){
+                                    thread.suspend();
+                            }
+                    });
+         unpause.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent e){
+                           thread.resume();
+                    }
+                    });
+             this.addWindowListener(new WindowAdapter(){
+                        public void windowClosing(WindowEvent e) {
+                            thread.stop();
+                        }
+                    });
+    }
+    public void run(){
+            int index=0;
+            while(true){
+                try {
+                    panel.setImage(image[index]);
+                    panel.repaint();
+                    Thread.sleep(timer);
+                    } 
+                catch (InterruptedException e){
+                            e.printStackTrace();
+                    }
+                 index++;
+                 if(index%4==0)index=0;
+            }
+    }
+    public static void main(String[] args) {
+            Thread thread  = new Thread( new Bird2());
+    }
+}
