@@ -1,0 +1,30 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.*;
+import java.io.*;
+import javax.imageio.*;
+import javax.swing.*;
+
+public class Bird extends JPanel{
+        private static final long serialVersionUID = 1L;
+        private BufferedImage image;
+        public BufferedImage getImage(){
+                return image;
+        }
+        public void setImage(BufferedImage image){
+                this.image = image;
+        }
+
+        public BirdPanel()
+        {
+          super();
+          setBackground(Color.WHITE);
+          setPreferredSize( new Dimension( 350, 320 ) );
+        }
+       
+        
+           public void paintComponent(Graphics g){
+              super.paintComponent(g);
+                g.drawImage(image, 0, 0, this);       
+           }
+}
